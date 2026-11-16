@@ -1,0 +1,103 @@
+{
+  "resources": {
+    "version": "1.3.0",
+    "files_verified": 769
+  },
+  "mujoco": "3.17.0",
+  "go2": {
+    "nq": 19,
+    "nv": 18,
+    "nu": 12,
+    "nbody": 18,
+    "ngeom": 56,
+    "ncam": 0,
+    "nkey": 1,
+    "timestep": 0.002,
+    "solver": 2,
+    "cone": 1,
+    "iterations": 100,
+    "ls_iterations": 50,
+    "impratio": 100.0,
+    "joints": [
+      null,
+      "FL_hip_joint",
+      "FL_thigh_joint",
+      "FL_calf_joint",
+      "FR_hip_joint",
+      "FR_thigh_joint",
+      "FR_calf_joint",
+      "RL_hip_joint",
+      "RL_thigh_joint",
+      "RL_calf_joint",
+      "RR_hip_joint",
+      "RR_thigh_joint",
+      "RR_calf_joint"
+    ],
+    "actuators": [
+      "FR_hip",
+      "FR_thigh",
+      "FR_calf",
+      "FL_hip",
+      "FL_thigh",
+      "FL_calf",
+      "RR_hip",
+      "RR_thigh",
+      "RR_calf",
+      "RL_hip",
+      "RL_thigh",
+      "RL_calf"
+    ],
+    "cameras": [],
+    "keys": [
+      "home"
+    ]
+  },
+  "course": {
+    "nq": 19,
+    "nv": 18,
+    "nu": 12,
+    "nbody": 29,
+    "ngeom": 828,
+    "ncam": 0,
+    "nkey": 1,
+    "timestep": 0.002,
+    "solver": 2,
+    "cone": 1,
+    "iterations": 50,
+    "ls_iterations": 10,
+    "impratio": 100.0,
+    "joints": [
+      null,
+      "FL_hip_joint",
+      "FL_thigh_joint",
+      "FL_calf_joint",
+      "FR_hip_joint",
+      "FR_thigh_joint",
+      "FR_calf_joint",
+      "RL_hip_joint",
+      "RL_thigh_joint",
+      "RL_calf_joint",
+      "RR_hip_joint",
+      "RR_thigh_joint",
+      "RR_calf_joint"
+    ],
+    "actuators": [
+      "FR_hip",
+      "FR_thigh",
+      "FR_calf",
+      "FL_hip",
+      "FL_thigh",
+      "FL_calf",
+      "RR_hip",
+      "RR_thigh",
+      "RR_calf",
+      "RL_hip",
+      "RL_thigh",
+      "RL_calf"
+    ],
+    "cameras": [],
+    "keys": [
+      "home"
+    ]
+  }
+}

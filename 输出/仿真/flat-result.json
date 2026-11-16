@@ -1,0 +1,47 @@
+{
+  "sim_seconds": 4.999999999999671,
+  "control_steps": 250,
+  "physics_steps": 2500,
+  "final_xyz": [
+    -0.04005594944580049,
+    -1.2734386863022817e-07,
+    0.25457242860798923
+  ],
+  "xy_drift_m": 0.04005594944600291,
+  "warning_counts": {},
+  "state_sha256": "8885f408ce70c1c42cf797b2bbda3a4b3696563eb3a929c271bdec3fa5f258d1",
+  "wall_seconds_including_render": 1.8753649230000065,
+  "status": "BASIC_SIM_OK",
+  "scene": "flat",
+  "mujoco": "3.17.0",
+  "resources": {
+    "version": "1.3.0",
+    "files_verified": 769
+  },
+  "source_sha256": "2014a3d76e30f17ab9447d8a67bd015291f74fa4d71ae30d005f1a32bd693d4b",
+  "deterministic_reset_replay": true,
+  "render_verified": true,
+  "render_backend": "egl",
+  "controller": "home-position PD kp=40 kd=2; zero policy action; no locomotion",
+  "actuator_joint_names": [
+    "FR_hip_joint",
+    "FR_thigh_joint",
+    "FR_calf_joint",
+    "FL_hip_joint",
+    "FL_thigh_joint",
+    "FL_calf_joint",
+    "RR_hip_joint",
+    "RR_thigh_joint",
+    "RR_calf_joint",
+    "RL_hip_joint",
+    "RL_thigh_joint",
+    "RL_calf_joint"
+  ],
+  "control_period": 0.02,
+  "timestep": 0.002,
+  "local_spawn_xyz": [
+    0.0,
+    0.0,
+    0.27
+  ]
+}
