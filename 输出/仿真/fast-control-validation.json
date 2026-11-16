@@ -1,0 +1,107 @@
+[
+  {
+    "session": "20261116T115321Z-flat-forward-5bab2b",
+    "validation": "PASS",
+    "sensor_values_per_record": 52,
+    "timestamp_alignment": "exact",
+    "distinct_camera_frames": 0,
+    "status": "CONTROL_FEEDBACK_OK",
+    "mode": "forward",
+    "scene": "flat",
+    "sim_seconds": 10.0,
+    "feedback_records": 501,
+    "camera_frames": 0,
+    "delta_xyz_m": [
+      2.318673980406875,
+      -0.21063184170503643,
+      -0.03671921554930144
+    ],
+    "delta_yaw_rad": -0.051061165906400766,
+    "min_base_height_m": 0.21966999707381363,
+    "max_abs_roll_pitch_rad": 0.117191015599126
+  },
+  {
+    "session": "20261116T115322Z-flat-backward-4e6a99",
+    "validation": "PASS",
+    "sensor_values_per_record": 52,
+    "timestamp_alignment": "exact",
+    "distinct_camera_frames": 0,
+    "status": "CONTROL_FEEDBACK_OK",
+    "mode": "backward",
+    "scene": "flat",
+    "sim_seconds": 10.0,
+    "feedback_records": 501,
+    "camera_frames": 0,
+    "delta_xyz_m": [
+      -3.4146576039295895,
+      0.10501208210411574,
+      -0.030755953530550745
+    ],
+    "delta_yaw_rad": -0.01021339466532305,
+    "min_base_height_m": 0.2307455659697555,
+    "max_abs_roll_pitch_rad": 0.060044681379361926
+  },
+  {
+    "session": "20261116T115323Z-flat-left-0b9537",
+    "validation": "PASS",
+    "sensor_values_per_record": 52,
+    "timestamp_alignment": "exact",
+    "distinct_camera_frames": 0,
+    "status": "CONTROL_FEEDBACK_OK",
+    "mode": "left",
+    "scene": "flat",
+    "sim_seconds": 10.0,
+    "feedback_records": 501,
+    "camera_frames": 0,
+    "delta_xyz_m": [
+      -0.16201994217143714,
+      -0.22192493109660075,
+      -0.038094652803959295
+    ],
+    "delta_yaw_rad": 2.529452518773815,
+    "min_base_height_m": 0.22582275102848023,
+    "max_abs_roll_pitch_rad": 0.12004023291733106
+  },
+  {
+    "session": "20261116T115324Z-flat-right-572774",
+    "validation": "PASS",
+    "sensor_values_per_record": 52,
+    "timestamp_alignment": "exact",
+    "distinct_camera_frames": 0,
+    "status": "CONTROL_FEEDBACK_OK",
+    "mode": "right",
+    "scene": "flat",
+    "sim_seconds": 10.0,
+    "feedback_records": 501,
+    "camera_frames": 0,
+    "delta_xyz_m": [
+      -0.16288202016487302,
+      0.25185059363001877,
+      -0.03672720513141767
+    ],
+    "delta_yaw_rad": -2.4897371570429243,
+    "min_base_height_m": 0.22724707693745164,
+    "max_abs_roll_pitch_rad": 0.12029150706122094
+  },
+  {
+    "session": "20261116T115324Z-flat-demo-54590b",
+    "validation": "PASS",
+    "sensor_values_per_record": 52,
+    "timestamp_alignment": "exact",
+    "distinct_camera_frames": 0,
+    "status": "CONTROL_FEEDBACK_OK",
+    "mode": "demo",
+    "scene": "flat",
+    "sim_seconds": 24.0,
+    "feedback_records": 1201,
+    "camera_frames": 0,
+    "delta_xyz_m": [
+      -0.9782214307327008,
+      -0.0609528668226358,
+      0.0019249306236663877
+    ],
+    "delta_yaw_rad": -0.12464471459405677,
+    "min_base_height_m": 0.21966999707381363,
+    "max_abs_roll_pitch_rad": 0.12191135642115905
+  }
+]

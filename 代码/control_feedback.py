@@ -40,6 +40,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mode", choices=[*MODES, "demo", "keyboard"], default="demo")
     parser.add_argument("--scene", choices=["flat", "course"], default="flat")
+    parser.add_argument("--speed", type=float, default=2.0, help="Gait speed scale, 0.5 to 2.5; old speed = 1")
     parser.add_argument("--seconds", type=float, default=None)
     parser.add_argument("--viewer", action="store_true")
     parser.add_argument("--no-camera", action="store_true")
@@ -47,6 +48,8 @@ def main():
     seconds = args.seconds if args.seconds is not None else (24 if args.mode == "demo" else 60 if args.mode == "keyboard" else 10)
     if not math.isfinite(seconds) or seconds < .1:
         parser.error("--seconds must be finite and >= 0.1")
+    if not math.isfinite(args.speed) or not .5 <= args.speed <= 2.5:
+        parser.error("--speed must be between 0.5 and 2.5")
     if args.mode == "keyboard":
         args.viewer = True
     resources = verify()
@@ -56,12 +59,12 @@ def main():
     (output / "camera").mkdir()
     model = make_environment(args.scene)
     data = reset(model)
-    control = Go2Control(model)
+    control = Go2Control(model, speed_scale=args.speed)
     mutex = threading.Lock()
     state = {"command": (0, 0), "label": "stop", "quit": False}
     def key_callback(key):
         with mutex:
-            keys = {87: ((1, 0), "forward"), 83: ((-1, 0), "backward"), 65: ((0, 1), "left"), 68: ((0, -1), "right"), 32: ((0, 0), "stop")}
+            keys = {265: ((1, 0), "forward"), 264: ((-1, 0), "backward"), 263: ((0, 1), "left"), 262: ((0, -1), "right"), 32: ((0, 0), "stop")}
             if key in keys:
                 state["command"], state["label"] = keys[key]
             if key == 81:
@@ -80,12 +83,12 @@ def main():
                    "format": "RGB uint8 PNG", "official_sensor_contract": False,
                    "render_backend": os.environ.get("MUJOCO_GL", "glfw")},
         "controller": {"type": "hand_written_joint_PD_diagonal_gait", "kp": 80, "kd": 2,
-                       "period_s": .6, "stance_fraction": .65, "lift_m": .09,
+                       "period_s": .6, "stance_fraction": .65, "lift_m": .09, "speed_scale": args.speed,
                        "command_semantics": "normalized direction, not calibrated velocity setpoint",
                        "official_action_interface": False, "root_force_or_teleportation": False},
         "actuator_order": control.actuator_names, "sensor_schema": sensor_schema,
         "debug_ground_truth": "diagnostics only; not used by gait controller",
-        "keyboard": "W forward, S backward, A left, D right, Space stop, Q finish; commands latch until next key",
+        "keyboard": "Up forward, Down backward, Left/Right turn, Space stop, Q finish; commands latch until next key",
     }
     manifest["camera"]["implementation"] = "body_attached_virtual_GL_camera" if args.scene == "course" else "model_camera"
     manifest["camera"]["terrain_collision_group_3_visible"] = args.scene == "course"
@@ -104,8 +107,8 @@ def main():
         if not args.no_camera:
             renderer = mujoco.Renderer(model, height=240, width=320)
         if args.viewer:
-            import mujoco.viewer as mjviewer
-            viewer = mjviewer.launch_passive(model, data, key_callback=key_callback)
+            from control_viewer import ControlViewer
+            viewer = ControlViewer(model, data, key_callback=key_callback)
             if args.scene == "course":
                 viewer.opt.geomgroup[3] = 1
             viewer.cam.distance = 2.8
@@ -157,6 +160,7 @@ def main():
                         break
                     with viewer.lock():
                         viewer.cam.lookat[:] = data.xpos[model.body("base_link").id]
+                    viewer.hud = f"t={tick*.02:.2f}s | {label} | speed x{args.speed:.1f}"
                     viewer.sync()
                 if tick % 25 == 0:
                     print(f"t={tick*.02:5.2f}s {label:8s} xyz={np.round(data.qpos[:3],3)} gyro={np.round(data.sensor('imu_gyro').data,3)} frames={frames}", flush=True)

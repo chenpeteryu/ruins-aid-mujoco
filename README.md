@@ -11,7 +11,7 @@ Ubuntu 本机开发，Python 3.12 + MuJoCo 3.17.0。基础目标是公开模型�
 ## 操控、运动与相机记录
 
 ```bash
-# 点击窗口后 W/S 前后、A/D 转向、空格停止、Q 结束
+# 点击窗口后 ↑/↓ 前后、←/→ 转向、空格停止、Q 结束
 .venv/bin/python 代码/control_feedback.py --mode keyboard
 
 # 资源包完整公开赛场中的键盘操控

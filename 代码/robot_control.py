@@ -67,8 +67,9 @@ class Go2Control:
     This hand-written gait uses local kp=80, kd=2, not the competition's
     kp=40 and normalized action interface. No root forces/teleportation used.
     """
-    def __init__(self, model):
+    def __init__(self, model, speed_scale=2.0):
         self.model = model
+        self.speed_scale = speed_scale
         self.qa, self.va = actuator_addresses(model)
         self.actuator_names = [model.actuator(i).name for i in range(model.nu)]
         self.indices = {leg: [self.actuator_names.index(f"{leg}_{j}") for j in ("hip", "thigh", "calf")] for leg in LEGS}
@@ -87,7 +88,7 @@ class Go2Control:
             self.target = self.home.copy()
             return self.target
         self.phase_time += dt
-        vx, yaw_rate = self.command * [.20, .80]
+        vx, yaw_rate = self.command * [.20, .80] * self.speed_scale
         period, duty, lift, height = .6, .65, .09, .25
         target = self.home.copy()
         for leg, offset in zip(LEGS, [.5, 0, 0, .5]):
