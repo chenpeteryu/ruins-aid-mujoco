@@ -1,0 +1,267 @@
+{
+  "schema": "go2-local-feedback/1",
+  "started_at_utc": "2026-11-16T11:33:23.539254+00:00",
+  "mode": "demo",
+  "requested_seconds": 24,
+  "mujoco": "3.17.0",
+  "resources": {
+    "version": "1.3.0",
+    "files_verified": 769
+  },
+  "scene": "local_flat_test_pad_with_noncolliding_landmarks",
+  "clock": "sim_time_ns = physics_step * 2000000; all feedback and RGB from same post-step mj_forward state",
+  "physics_dt_s": 0.002,
+  "control_dt_s": 0.02,
+  "feedback_hz": 50,
+  "camera": {
+    "enabled": true,
+    "name": "front_rgb",
+    "width": 320,
+    "height": 240,
+    "hz": 10,
+    "fovy_deg": 60,
+    "base_position_m": [
+      0.34,
+      0,
+      0.05
+    ],
+    "pitch_down_deg": 10,
+    "format": "RGB uint8 PNG",
+    "official_sensor_contract": false,
+    "render_backend": "egl"
+  },
+  "controller": {
+    "type": "hand_written_joint_PD_diagonal_gait",
+    "kp": 80,
+    "kd": 2,
+    "period_s": 0.6,
+    "stance_fraction": 0.65,
+    "lift_m": 0.09,
+    "command_semantics": "normalized direction, not calibrated velocity setpoint",
+    "official_action_interface": false,
+    "root_force_or_teleportation": false
+  },
+  "actuator_order": [
+    "FR_hip",
+    "FR_thigh",
+    "FR_calf",
+    "FL_hip",
+    "FL_thigh",
+    "FL_calf",
+    "RR_hip",
+    "RR_thigh",
+    "RR_calf",
+    "RL_hip",
+    "RL_thigh",
+    "RL_calf"
+  ],
+  "sensor_schema": [
+    {
+      "name": "FR_hip_pos",
+      "dimension": 1,
+      "type": 9
+    },
+    {
+      "name": "FR_thigh_pos",
+      "dimension": 1,
+      "type": 9
+    },
+    {
+      "name": "FR_calf_pos",
+      "dimension": 1,
+      "type": 9
+    },
+    {
+      "name": "FL_hip_pos",
+      "dimension": 1,
+      "type": 9
+    },
+    {
+      "name": "FL_thigh_pos",
+      "dimension": 1,
+      "type": 9
+    },
+    {
+      "name": "FL_calf_pos",
+      "dimension": 1,
+      "type": 9
+    },
+    {
+      "name": "RR_hip_pos",
+      "dimension": 1,
+      "type": 9
+    },
+    {
+      "name": "RR_thigh_pos",
+      "dimension": 1,
+      "type": 9
+    },
+    {
+      "name": "RR_calf_pos",
+      "dimension": 1,
+      "type": 9
+    },
+    {
+      "name": "RL_hip_pos",
+      "dimension": 1,
+      "type": 9
+    },
+    {
+      "name": "RL_thigh_pos",
+      "dimension": 1,
+      "type": 9
+    },
+    {
+      "name": "RL_calf_pos",
+      "dimension": 1,
+      "type": 9
+    },
+    {
+      "name": "FR_hip_vel",
+      "dimension": 1,
+      "type": 10
+    },
+    {
+      "name": "FR_thigh_vel",
+      "dimension": 1,
+      "type": 10
+    },
+    {
+      "name": "FR_calf_vel",
+      "dimension": 1,
+      "type": 10
+    },
+    {
+      "name": "FL_hip_vel",
+      "dimension": 1,
+      "type": 10
+    },
+    {
+      "name": "FL_thigh_vel",
+      "dimension": 1,
+      "type": 10
+    },
+    {
+      "name": "FL_calf_vel",
+      "dimension": 1,
+      "type": 10
+    },
+    {
+      "name": "RR_hip_vel",
+      "dimension": 1,
+      "type": 10
+    },
+    {
+      "name": "RR_thigh_vel",
+      "dimension": 1,
+      "type": 10
+    },
+    {
+      "name": "RR_calf_vel",
+      "dimension": 1,
+      "type": 10
+    },
+    {
+      "name": "RL_hip_vel",
+      "dimension": 1,
+      "type": 10
+    },
+    {
+      "name": "RL_thigh_vel",
+      "dimension": 1,
+      "type": 10
+    },
+    {
+      "name": "RL_calf_vel",
+      "dimension": 1,
+      "type": 10
+    },
+    {
+      "name": "FR_hip_torque",
+      "dimension": 1,
+      "type": 16
+    },
+    {
+      "name": "FR_thigh_torque",
+      "dimension": 1,
+      "type": 16
+    },
+    {
+      "name": "FR_calf_torque",
+      "dimension": 1,
+      "type": 16
+    },
+    {
+      "name": "FL_hip_torque",
+      "dimension": 1,
+      "type": 16
+    },
+    {
+      "name": "FL_thigh_torque",
+      "dimension": 1,
+      "type": 16
+    },
+    {
+      "name": "FL_calf_torque",
+      "dimension": 1,
+      "type": 16
+    },
+    {
+      "name": "RR_hip_torque",
+      "dimension": 1,
+      "type": 16
+    },
+    {
+      "name": "RR_thigh_torque",
+      "dimension": 1,
+      "type": 16
+    },
+    {
+      "name": "RR_calf_torque",
+      "dimension": 1,
+      "type": 16
+    },
+    {
+      "name": "RL_hip_torque",
+      "dimension": 1,
+      "type": 16
+    },
+    {
+      "name": "RL_thigh_torque",
+      "dimension": 1,
+      "type": 16
+    },
+    {
+      "name": "RL_calf_torque",
+      "dimension": 1,
+      "type": 16
+    },
+    {
+      "name": "imu_quat",
+      "dimension": 4,
+      "type": 27
+    },
+    {
+      "name": "imu_gyro",
+      "dimension": 3,
+      "type": 3
+    },
+    {
+      "name": "imu_acc",
+      "dimension": 3,
+      "type": 1
+    },
+    {
+      "name": "frame_pos",
+      "dimension": 3,
+      "type": 26
+    },
+    {
+      "name": "frame_vel",
+      "dimension": 3,
+      "type": 31
+    }
+  ],
+  "debug_ground_truth": "diagnostics only; not used by gait controller",
+  "keyboard": "W forward, S backward, A left, D right, Space stop, Q finish; commands latch until next key"
+}

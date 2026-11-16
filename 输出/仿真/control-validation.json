@@ -1,0 +1,123 @@
+[
+  {
+    "session": "20261116T113316Z-probe-4ba990",
+    "validation": "PASS",
+    "sensor_values_per_record": 52,
+    "timestamp_alignment": "exact",
+    "distinct_camera_frames": 101,
+    "status": "CONTROL_FEEDBACK_OK",
+    "mode": "probe",
+    "sim_seconds": 10.0,
+    "feedback_records": 501,
+    "camera_frames": 101,
+    "delta_xyz_m": [
+      -0.017213786718849555,
+      0.0005175500788118715,
+      0.0034590875613031424
+    ],
+    "delta_yaw_rad": -0.0019159006036328105,
+    "min_base_height_m": 0.27,
+    "max_abs_roll_pitch_rad": 0.012797379910486649,
+    "probe_joint_response_rad": 0.03391161936872933
+  },
+  {
+    "session": "20261116T113317Z-forward-1e6ba4",
+    "validation": "PASS",
+    "sensor_values_per_record": 52,
+    "timestamp_alignment": "exact",
+    "distinct_camera_frames": 101,
+    "status": "CONTROL_FEEDBACK_OK",
+    "mode": "forward",
+    "sim_seconds": 10.0,
+    "feedback_records": 501,
+    "camera_frames": 101,
+    "delta_xyz_m": [
+      0.6874815492897223,
+      -0.028041824634041267,
+      -0.03550606509440815
+    ],
+    "delta_yaw_rad": 0.010696615247406057,
+    "min_base_height_m": 0.22340202789399183,
+    "max_abs_roll_pitch_rad": 0.09461240400713752
+  },
+  {
+    "session": "20261116T113319Z-backward-e1f3e5",
+    "validation": "PASS",
+    "sensor_values_per_record": 52,
+    "timestamp_alignment": "exact",
+    "distinct_camera_frames": 101,
+    "status": "CONTROL_FEEDBACK_OK",
+    "mode": "backward",
+    "sim_seconds": 10.0,
+    "feedback_records": 501,
+    "camera_frames": 101,
+    "delta_xyz_m": [
+      -1.9107610658968501,
+      0.010305592260256026,
+      -0.03185163853122591
+    ],
+    "delta_yaw_rad": 0.005289791000192373,
+    "min_base_height_m": 0.2321105468758712,
+    "max_abs_roll_pitch_rad": 0.064515037369837
+  },
+  {
+    "session": "20261116T113320Z-left-75f1d4",
+    "validation": "PASS",
+    "sensor_values_per_record": 52,
+    "timestamp_alignment": "exact",
+    "distinct_camera_frames": 101,
+    "status": "CONTROL_FEEDBACK_OK",
+    "mode": "left",
+    "sim_seconds": 10.0,
+    "feedback_records": 501,
+    "camera_frames": 101,
+    "delta_xyz_m": [
+      -0.4624754094045782,
+      -0.2661731219442664,
+      -0.036130691398432974
+    ],
+    "delta_yaw_rad": 1.3994731713469266,
+    "min_base_height_m": 0.22733064634245664,
+    "max_abs_roll_pitch_rad": 0.09621467176938181
+  },
+  {
+    "session": "20261116T113321Z-right-75e274",
+    "validation": "PASS",
+    "sensor_values_per_record": 52,
+    "timestamp_alignment": "exact",
+    "distinct_camera_frames": 101,
+    "status": "CONTROL_FEEDBACK_OK",
+    "mode": "right",
+    "sim_seconds": 10.0,
+    "feedback_records": 501,
+    "camera_frames": 101,
+    "delta_xyz_m": [
+      -0.4945455389477761,
+      0.2743613237256772,
+      -0.03391395622653781
+    ],
+    "delta_yaw_rad": -1.3584560843686133,
+    "min_base_height_m": 0.2293459067618582,
+    "max_abs_roll_pitch_rad": 0.10363760339930513
+  },
+  {
+    "session": "20261116T113323Z-demo-bc4af3",
+    "validation": "PASS",
+    "sensor_values_per_record": 52,
+    "timestamp_alignment": "exact",
+    "distinct_camera_frames": 241,
+    "status": "CONTROL_FEEDBACK_OK",
+    "mode": "demo",
+    "sim_seconds": 24.0,
+    "feedback_records": 1201,
+    "camera_frames": 241,
+    "delta_xyz_m": [
+      -1.2304783136336712,
+      -0.15307606394189102,
+      0.0017443890403135986
+    ],
+    "delta_yaw_rad": -0.0088441552782065,
+    "min_base_height_m": 0.22340202789399183,
+    "max_abs_roll_pitch_rad": 0.10658477375750117
+  }
+]

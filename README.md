@@ -1,12 +1,26 @@
 # 废墟智援 · MuJoCo 基础仿真
 
-Ubuntu 本机开发，Python 3.12 + MuJoCo 3.17.0。基础目标是公开模型和赛场的加载、重置、原地站立、物理步进与画面渲染。当前没有完赛策略或训练模型。
+Ubuntu 本机开发，Python 3.12 + MuJoCo 3.17.0。基础目标是公开模型和赛场的加载、重置、原地站立、物理步进与画面渲染。已实现本地平地手写基础步态与操控反馈，尚无完赛策略或训练模型。
 
 仓库：https://github.com/chenpeteryu/ruins-aid-mujoco （私有）
 
 ## 当前进度
 
 2026-11-16：本机环境搭建及基础仿真通过。RTX 4080 Laptop 12 GB、NVIDIA 580.178.04 可用，EGL 渲染和桌面查看器已验证。完整结果见 [进度记录](docs/进度.md)。
+
+## 操控、运动与相机记录
+
+```bash
+# 点击窗口后 W/S 前后、A/D 转向、空格停止、Q 结束
+.venv/bin/python 代码/control_feedback.py --mode keyboard
+
+# 自动动作与同步记录
+MUJOCO_GL=egl .venv/bin/python 代码/control_feedback.py --mode demo
+```
+
+50Hz 反馈、10Hz 前视 RGB 按仿真时间戳保存到 `输出/操控反馈/`。详见 [操控与传感器](docs/操控与传感器.md)，包括接口、数据格式、已验证结果与限制。
+
+![带时间戳的前视相机](输出/仿真/camera-timeline.png)
 
 ## 本机运行
 
@@ -53,4 +67,4 @@ MUJOCO_GL=egl .venv/bin/python 代码/basic_sim.py --scene course --render
 
 ![Go2 原地站立](输出/仿真/flat-standing.png)
 
-这里展示的是公开训练场景与基础 PD 站立。没有验证行走、避障、传感器接口、ONNX 或平台提交。
+这里展示的是公开训练场景与基础 PD 站立。当前新增了平地基础运动和本地传感器反馈验证；正式传感器合同、复杂地形避障、ONNX 与平台提交尚未完成。
