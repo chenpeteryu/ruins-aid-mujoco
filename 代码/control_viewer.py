@@ -9,9 +9,17 @@ class ControlViewer:
     def __init__(self, model, data, key_callback):
         if not glfw.init():
             raise RuntimeError("Could not initialize GLFW")
+        # MuJoCo's offscreen GLFW renderer leaves VISIBLE=0 as a global hint.
+        # Reset those hints before creating the interactive control window.
+        glfw.default_window_hints()
+        glfw.window_hint(glfw.VISIBLE, glfw.TRUE)
         self.window = glfw.create_window(1000, 720, "Go2 | Arrow keys move | Space stop | Q quit", None, None)
         if not self.window:
             raise RuntimeError("Could not create control window")
+        glfw.show_window(self.window)
+        glfw.focus_window(self.window)
+        if not glfw.get_window_attrib(self.window, glfw.VISIBLE):
+            raise RuntimeError("Control window is unexpectedly hidden")
         glfw.make_context_current(self.window)
         glfw.swap_interval(0)
         self.model, self.data = model, data
