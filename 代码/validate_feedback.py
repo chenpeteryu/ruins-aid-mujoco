@@ -49,7 +49,9 @@ def validate(path):
     if manifest["camera"]["enabled"]:
         assert len(frames) == (len(records) - 1) // 5 + 1
         assert len(set(image_hashes)) > 1
-    delta_x = summary["delta_xyz_m"][0]
+    initial_yaw = records[0]["debug_ground_truth"]["yaw_rad"]
+    delta = summary["delta_xyz_m"]
+    delta_x = np.cos(initial_yaw) * delta[0] + np.sin(initial_yaw) * delta[1]
     yaw = summary["delta_yaw_rad"]
     mode = summary["mode"]
     if mode == "forward":
@@ -69,8 +71,11 @@ def validate(path):
     elif mode == "demo":
         def truth_at(t):
             return records[round(t / .02)]["debug_ground_truth"]
-        assert truth_at(6)["base_xyz_m"][0] - truth_at(1)["base_xyz_m"][0] > .15
-        assert truth_at(12)["base_xyz_m"][0] - truth_at(7)["base_xyz_m"][0] < -.15
+        def forward_delta(t1, t2):
+            a, b = np.array(truth_at(t1)["base_xyz_m"]), np.array(truth_at(t2)["base_xyz_m"])
+            return float((b - a)[:2] @ [np.cos(initial_yaw), np.sin(initial_yaw)])
+        assert forward_delta(1, 6) > .15
+        assert forward_delta(7, 12) < -.15
         yaws = np.unwrap([r["debug_ground_truth"]["yaw_rad"] for r in records])
         assert yaws[850] - yaws[650] > .3
         assert yaws[1100] - yaws[900] < -.3

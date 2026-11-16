@@ -41,6 +41,7 @@ def main():
     parser.add_argument("--mode", choices=[*MODES, "demo", "keyboard"], default="demo")
     parser.add_argument("--scene", choices=["flat", "course"], default="flat")
     parser.add_argument("--speed", type=float, default=2.0, help="Gait speed scale, 0.5 to 2.5; old speed = 1")
+    parser.add_argument("--yaw-deg", type=float, default=90.0, help="Initial left yaw offset in degrees (default 90)")
     parser.add_argument("--seconds", type=float, default=None)
     parser.add_argument("--viewer", action="store_true")
     parser.add_argument("--no-camera", action="store_true")
@@ -50,6 +51,8 @@ def main():
         parser.error("--seconds must be finite and >= 0.1")
     if not math.isfinite(args.speed) or not .5 <= args.speed <= 2.5:
         parser.error("--speed must be between 0.5 and 2.5")
+    if not math.isfinite(args.yaw_deg):
+        parser.error("--yaw-deg must be finite")
     if args.mode == "keyboard":
         args.viewer = True
     resources = verify()
@@ -59,6 +62,12 @@ def main():
     (output / "camera").mkdir()
     model = make_environment(args.scene)
     data = reset(model)
+    angle = math.radians(args.yaw_deg)
+    original = data.qpos[3:7].copy()
+    mujoco.mju_mulQuat(data.qpos[3:7], np.array([math.cos(angle / 2), 0, 0, math.sin(angle / 2)]), original)
+    mujoco.mj_forward(model, data)
+    if any(contact.dist < -.03 for contact in data.contact[:data.ncon]):
+        raise RuntimeError("Rotated spawn overlaps scene geometry")
     control = Go2Control(model, speed_scale=args.speed)
     mutex = threading.Lock()
     state = {"command": (0, 0), "label": "stop", "quit": False}
@@ -75,6 +84,7 @@ def main():
         "mode": args.mode, "requested_seconds": seconds, "mujoco": mujoco.__version__,
         "resources": resources, "scene": args.scene,
         "local_spawn_xyz": data.qpos[:3].tolist(),
+        "initial_yaw_offset_deg": args.yaw_deg,
         "official_start_position": False,
         "clock": "sim_time_ns = physics_step * 2000000; all feedback and RGB from same post-step mj_forward state",
         "physics_dt_s": .002, "control_dt_s": .02, "feedback_hz": 50,
@@ -92,12 +102,14 @@ def main():
     }
     manifest["camera"]["implementation"] = "body_attached_virtual_GL_camera" if args.scene == "course" else "model_camera"
     manifest["camera"]["terrain_collision_group_3_visible"] = args.scene == "course"
+    manifest["camera"]["live_preview"] = args.viewer and not args.no_camera
     (output / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2))
     print(f"SESSION={output}", flush=True)
     if args.mode == "keyboard":
         print(manifest["keyboard"], flush=True)
     renderer = None
     viewer = None
+    camera_viewer = None
     records = []
     frames = 0
     success = False
@@ -113,6 +125,9 @@ def main():
                 viewer.opt.geomgroup[3] = 1
             viewer.cam.distance = 2.8
             viewer.cam.elevation = -20
+            if renderer is not None:
+                from control_viewer import CameraViewer
+                camera_viewer = CameraViewer(model, key_callback)
         with (output / "feedback.jsonl").open("w", buffering=1) as log, (output / "frames.csv").open("w", newline="") as framefile:
             writer = csv.writer(framefile, lineterminator="\n")
             writer.writerow(["frame_index", "physics_step", "sim_time_ns", "feedback_index", "relative_path", "sha256"])
@@ -135,6 +150,8 @@ def main():
                     if pixels.shape != (240, 320, 3):
                         raise RuntimeError("Unexpected camera shape")
                     Image.fromarray(pixels).save(output / relative)
+                    if camera_viewer is not None:
+                        camera_viewer.show(pixels, sim_ns)
                     digest = hashlib.sha256((output / relative).read_bytes()).hexdigest()
                     sample["camera_frame"] = {"index": frames, "relative_path": relative, "sim_time_ns": sim_ns, "sha256": digest}
                     writer.writerow([frames, physics_step, sim_ns, tick, relative, digest])
@@ -177,6 +194,8 @@ def main():
     finally:
         if renderer is not None:
             renderer.close()
+        if camera_viewer is not None:
+            camera_viewer.close()
         if viewer is not None:
             viewer.close()
         if records:

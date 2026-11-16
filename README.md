@@ -21,6 +21,8 @@ Ubuntu 本机开发，Python 3.12 + MuJoCo 3.17.0。基础目标是公开模型�
 MUJOCO_GL=egl .venv/bin/python 代码/control_feedback.py --mode demo
 ```
 
+键盘模式同时打开操控和相机画面两个窗口，初始朝向默认左转 90°（可用 `--yaw-deg 0` 恢复）。
+
 50Hz 反馈、10Hz 前视 RGB 按仿真时间戳保存到 `输出/操控反馈/`。详见 [操控与传感器](docs/操控与传感器.md)，包括接口、数据格式、已验证结果与限制。
 
 ![带时间戳的前视相机](输出/仿真/camera-timeline.png)

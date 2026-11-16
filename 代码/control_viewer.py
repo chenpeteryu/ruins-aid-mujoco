@@ -3,6 +3,8 @@ from contextlib import nullcontext
 
 import glfw
 import mujoco
+import numpy as np
+from PIL import Image
 
 
 class ControlViewer:
@@ -70,5 +72,52 @@ class ControlViewer:
             glfw.make_context_current(self.window)
             self.context.free()
             self.scene = None
+            glfw.destroy_window(self.window)
+            self.window = None
+
+
+class CameraViewer:
+    """Display the exact RGB array used by the synchronized recorder."""
+    def __init__(self, model, key_callback):
+        glfw.default_window_hints()
+        glfw.window_hint(glfw.VISIBLE, glfw.TRUE)
+        self.window = glfw.create_window(640, 480, "Go2 front camera", None, None)
+        if not self.window:
+            raise RuntimeError("Could not create camera window")
+        glfw.show_window(self.window)
+        if not glfw.get_window_attrib(self.window, glfw.VISIBLE):
+            raise RuntimeError("Camera window is unexpectedly hidden")
+        glfw.make_context_current(self.window)
+        glfw.swap_interval(0)
+        self.context = mujoco.MjrContext(model, mujoco.mjtFontScale.mjFONTSCALE_100)
+        def key(window, key, scancode, action, mods):
+            if action in (glfw.PRESS, glfw.REPEAT):
+                key_callback(key)
+        glfw.set_key_callback(self.window, key)
+
+    def show(self, rgb, sim_time_ns):
+        if self.window is None:
+            return
+        if glfw.window_should_close(self.window):
+            self.close()
+            return
+        glfw.make_context_current(self.window)
+        width, height = glfw.get_framebuffer_size(self.window)
+        if width and height:
+            # Letterbox on resize; only display is scaled, recorded RGB is unchanged.
+            scale = min(width / rgb.shape[1], height / rgb.shape[0])
+            size = (max(1, round(rgb.shape[1] * scale)), max(1, round(rgb.shape[0] * scale)))
+            canvas = np.zeros((height, width, 3), dtype=np.uint8)
+            image = np.asarray(Image.fromarray(rgb).resize(size, Image.Resampling.BILINEAR))
+            x, y = (width - size[0]) // 2, (height - size[1]) // 2
+            canvas[y:y + size[1], x:x + size[0]] = image
+            mujoco.mjr_drawPixels(np.ascontiguousarray(canvas[::-1]).reshape(-1), None, mujoco.MjrRect(0, 0, width, height), self.context)
+            glfw.set_window_title(self.window, f"Go2 front camera | sim {sim_time_ns / 1e9:.2f}s | 10 Hz")
+            glfw.swap_buffers(self.window)
+
+    def close(self):
+        if self.window is not None:
+            glfw.make_context_current(self.window)
+            self.context.free()
             glfw.destroy_window(self.window)
             self.window = None
