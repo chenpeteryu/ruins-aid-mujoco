@@ -1,0 +1,21 @@
+{
+  "session": "20261116T114233Z-course-forward-a2b6df",
+  "validation": "PASS",
+  "sensor_values_per_record": 52,
+  "timestamp_alignment": "exact",
+  "distinct_camera_frames": 61,
+  "status": "CONTROL_FEEDBACK_OK",
+  "mode": "forward",
+  "scene": "course",
+  "sim_seconds": 6.0,
+  "feedback_records": 301,
+  "camera_frames": 61,
+  "delta_xyz_m": [
+    0.3374263224308012,
+    -0.004040273311541109,
+    -0.05820519571345126
+  ],
+  "delta_yaw_rad": -0.02955801529477771,
+  "min_base_height_m": 0.2245991012622465,
+  "max_abs_roll_pitch_rad": 0.09536336231158565
+}

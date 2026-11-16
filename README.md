@@ -14,7 +14,10 @@ Ubuntu 本机开发，Python 3.12 + MuJoCo 3.17.0。基础目标是公开模型�
 # 点击窗口后 W/S 前后、A/D 转向、空格停止、Q 结束
 .venv/bin/python 代码/control_feedback.py --mode keyboard
 
-# 自动动作与同步记录
+# 资源包完整公开赛场中的键盘操控
+.venv/bin/python 代码/control_feedback.py --scene course --mode keyboard
+
+# 自动动作与同步记录（默认平地）
 MUJOCO_GL=egl .venv/bin/python 代码/control_feedback.py --mode demo
 ```
 

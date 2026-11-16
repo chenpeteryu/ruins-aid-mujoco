@@ -5,15 +5,18 @@ import xml.etree.ElementTree as ET
 import mujoco
 import numpy as np
 
-from basic_sim import actuator_addresses
+from basic_sim import actuator_addresses, load_model
 from check_resources import RESOURCES
 
 LEGS = ("FR", "FL", "RR", "RL")
 
 
-def make_environment():
+def make_environment(scene="flat"):
     if mujoco.__version__ != "3.17.0":
         raise RuntimeError("MuJoCo 3.17.0 required")
+    if scene == "course":
+        model, _ = load_model("course")
+        return model
     source = RESOURCES / "robot/go2/physics/go2.xml"
     xml = ET.parse(source).getroot()
     xml.find("compiler").set("meshdir", str(source.parent / "assets"))
@@ -31,6 +34,31 @@ def make_environment():
     base = world.find("body[@name='base_link']")
     ET.SubElement(base, "camera", name="front_rgb", pos=".34 0 .05", xyaxes="0 -1 0 .173648 0 .984808", fovy="60")
     return mujoco.MjModel.from_xml_string(ET.tostring(xml, encoding="unicode"))
+
+
+def update_front_camera(renderer, model, data, scene="flat"):
+    if scene == "flat":
+        renderer.update_scene(data, camera="front_rgb")
+        return
+    # Binary MJB has no camera slots. Set a rigidly body-mounted GL camera
+    # without recompiling, exporting or changing the official physics assets.
+    options = mujoco.MjvOption()
+    options.geomgroup[3] = 1
+    renderer.update_scene(data, scene_option=options)
+    body = model.body("base_link").id
+    rotation = data.xmat[body].reshape(3, 3)
+    pitch = math.radians(10)
+    for camera in renderer.scene.camera:
+        camera.pos[:] = data.xpos[body] + rotation @ np.array([.34, 0, .05])
+        camera.forward[:] = rotation @ np.array([math.cos(pitch), 0, -math.sin(pitch)])
+        camera.up[:] = rotation @ np.array([math.sin(pitch), 0, math.cos(pitch)])
+        camera.frustum_near = .01
+        camera.frustum_far = 50
+        camera.frustum_center = 0
+        camera.frustum_width = 0
+        camera.frustum_top = .01 * math.tan(math.radians(30))
+        camera.frustum_bottom = -camera.frustum_top
+        camera.orthographic = 0
 
 
 class Go2Control:

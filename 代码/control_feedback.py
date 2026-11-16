@@ -17,7 +17,7 @@ from PIL import Image
 
 from basic_sim import reset
 from check_resources import ROOT, verify
-from robot_control import Go2Control, feedback, make_environment
+from robot_control import Go2Control, feedback, make_environment, update_front_camera
 
 MODES = {"forward": (1, 0), "backward": (-1, 0), "left": (0, 1), "right": (0, -1), "stand": (0, 0), "probe": (0, 0)}
 
@@ -39,6 +39,7 @@ def scripted(mode, seconds):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mode", choices=[*MODES, "demo", "keyboard"], default="demo")
+    parser.add_argument("--scene", choices=["flat", "course"], default="flat")
     parser.add_argument("--seconds", type=float, default=None)
     parser.add_argument("--viewer", action="store_true")
     parser.add_argument("--no-camera", action="store_true")
@@ -50,10 +51,10 @@ def main():
         args.viewer = True
     resources = verify()
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    output = ROOT / "输出/操控反馈" / f"{stamp}-{args.mode}-{uuid.uuid4().hex[:6]}"
+    output = ROOT / "输出/操控反馈" / f"{stamp}-{args.scene}-{args.mode}-{uuid.uuid4().hex[:6]}"
     output.mkdir(parents=True)
     (output / "camera").mkdir()
-    model = make_environment()
+    model = make_environment(args.scene)
     data = reset(model)
     control = Go2Control(model)
     mutex = threading.Lock()
@@ -69,7 +70,9 @@ def main():
     manifest = {
         "schema": "go2-local-feedback/1", "started_at_utc": datetime.now(timezone.utc).isoformat(),
         "mode": args.mode, "requested_seconds": seconds, "mujoco": mujoco.__version__,
-        "resources": resources, "scene": "local_flat_test_pad_with_noncolliding_landmarks",
+        "resources": resources, "scene": args.scene,
+        "local_spawn_xyz": data.qpos[:3].tolist(),
+        "official_start_position": False,
         "clock": "sim_time_ns = physics_step * 2000000; all feedback and RGB from same post-step mj_forward state",
         "physics_dt_s": .002, "control_dt_s": .02, "feedback_hz": 50,
         "camera": {"enabled": not args.no_camera, "name": "front_rgb", "width": 320, "height": 240,
@@ -84,6 +87,8 @@ def main():
         "debug_ground_truth": "diagnostics only; not used by gait controller",
         "keyboard": "W forward, S backward, A left, D right, Space stop, Q finish; commands latch until next key",
     }
+    manifest["camera"]["implementation"] = "body_attached_virtual_GL_camera" if args.scene == "course" else "model_camera"
+    manifest["camera"]["terrain_collision_group_3_visible"] = args.scene == "course"
     (output / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2))
     print(f"SESSION={output}", flush=True)
     if args.mode == "keyboard":
@@ -101,6 +106,8 @@ def main():
         if args.viewer:
             import mujoco.viewer as mjviewer
             viewer = mjviewer.launch_passive(model, data, key_callback=key_callback)
+            if args.scene == "course":
+                viewer.opt.geomgroup[3] = 1
             viewer.cam.distance = 2.8
             viewer.cam.elevation = -20
         with (output / "feedback.jsonl").open("w", buffering=1) as log, (output / "frames.csv").open("w", newline="") as framefile:
@@ -120,7 +127,7 @@ def main():
                               wall_elapsed_ns=time.monotonic_ns() - int(start_wall * 1e9), camera_frame=None)
                 if renderer is not None and tick % 5 == 0:
                     relative = f"camera/{frames:06d}_{sim_ns:012d}.png"
-                    renderer.update_scene(data, camera="front_rgb")
+                    update_front_camera(renderer, model, data, args.scene)
                     pixels = renderer.render()
                     if pixels.shape != (240, 320, 3):
                         raise RuntimeError("Unexpected camera shape")
@@ -170,7 +177,7 @@ def main():
             viewer.close()
         if records:
             yaws = np.unwrap([r["debug_ground_truth"]["yaw_rad"] for r in records])
-            summary = {"status": "CONTROL_FEEDBACK_OK" if success else "FAILED", "mode": args.mode,
+            summary = {"status": "CONTROL_FEEDBACK_OK" if success else "FAILED", "mode": args.mode, "scene": args.scene,
                        "sim_seconds": records[-1]["sim_time_s"], "feedback_records": len(records), "camera_frames": frames,
                        "delta_xyz_m": (np.array(records[-1]["debug_ground_truth"]["base_xyz_m"]) - records[0]["debug_ground_truth"]["base_xyz_m"]).tolist(),
                        "delta_yaw_rad": float(yaws[-1] - yaws[0]),
